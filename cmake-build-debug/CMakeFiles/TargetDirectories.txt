@@ -1,0 +1,3 @@
+C:/Users/Cian Ormond/CLionProjects/vatsim-mgr/cmake-build-debug/CMakeFiles/vatsim-mgr.dir
+C:/Users/Cian Ormond/CLionProjects/vatsim-mgr/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Cian Ormond/CLionProjects/vatsim-mgr/cmake-build-debug/CMakeFiles/rebuild_cache.dir
