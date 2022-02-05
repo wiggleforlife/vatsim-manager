@@ -1,4 +1,0 @@
-"C:\Users\Cian Ormond\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\213.6777.58\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Users/Cian Ormond/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/ninja/win/ninja.exe" -G Ninja "C:\Users\Cian Ormond\CLionProjects\vatsim-mgr"
--- Configuring done
--- Generating done
--- Build files have been written to: C:/Users/Cian Ormond/CLionProjects/vatsim-mgr/cmake-build-debug
