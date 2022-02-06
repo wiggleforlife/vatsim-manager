@@ -6,11 +6,15 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include "utils.h"
 
 using namespace std;
 
 const char* version = "0.1.0";
 vector<string> versions;
+utils ut;
+
+//TODO keep track of installed programs and add --refresh option
 
 size_t write_data(char *ptr, size_t size, size_t nmemb, void *userdata) {
     std::ostringstream *stream = (std::ostringstream*)userdata;
@@ -93,28 +97,33 @@ int downloadXpilot() {
     return 0;
 }
 
+//TODO confirm before installing
 int install(char* program) {
-    if (strcmp(program, "xpilot") == 0) {
+    if (ut.iequals(program, "xpilot")) {
         downloadXpilot();
         system("chmod +x xpilot.run");
         system("./xpilot.run");
         system("rm xpilot.run");
+    } else {
+        cout << "Program name not recognised." << endl;
     }
     return 0;
 }
 
 int remove(char* program) {
-    if (strcmp(program, "xpilot") == 0) {
+    if (ut.iequals(program, "xpilot")) {
         system("rm -rf \"$HOME/.cache/Justin Shannon\"");
         system("$(find $HOME -name xPilot)/uninstall");
-    } 
+    } else {
+        cout << "Program name not recognised." << endl;
+    }
 }
 
 void showLicense() {
     cout << "This project is not endorsed by any VATSIM staff member." << endl;
     cout << "The xPilot 2.0.0 beta is licensed under GPL3. Redistribution is allowed under this license and express " <<
     "permission was given by Justin Shannon." << endl << endl;
-    cout << "libCURL 7.81.0 has a custom license. Usage is allowed under this license." << endl << endl;
+    cout << "libcURL 7.81.0 has a custom license. Usage is allowed under this license." << endl << endl;
 }
 
 void showCommands() {
@@ -122,6 +131,7 @@ void showCommands() {
     cout << "-l - displays license information" << endl;
     cout << "-i - installs a pilot/ATC client from the following list - " << endl;
     cout << "     xPilot 2.0.0 beta (X-Plane 11)" << endl;
+    cout << "-r - uninstalls a pilot/ATC client from the above list" << endl;
 }
 
 int main(int argc, char** argv) {
@@ -130,6 +140,7 @@ int main(int argc, char** argv) {
     cout << "Licensed under GPL3. For licensing of programs included, use -l." << endl << endl;
 
     //TODO remove this if statement bs
+    //TODO add config option for xPilot's AppConfig
     if (argc > 1) {
         if (strcmp(argv[1], "-i") == 0) {
             if (argc > 2) {
@@ -141,7 +152,8 @@ int main(int argc, char** argv) {
             if (argc > 2) {
                 remove(argv[2]);
             } else {
-                cout << "Please specify a program to install. Available options are xpilot." << endl;
+                //TODO only show installed programs
+                cout << "Please specify a program to uninstall. Available options are xpilot." << endl;
             }
         } else if (strcmp(argv[1], "-h") == 0) {showCommands();}
         else if (strcmp(argv[1], "-l") == 0) {showLicense();}
