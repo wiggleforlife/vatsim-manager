@@ -163,7 +163,7 @@ int install(char* program) {
             cout << "Operation cancelled by user" << endl;
         }
     } else {
-            cout << "Program name not recognised." << endl;
+        cout << "Program name not recognised." << endl;
     }
     return 0;
 }
@@ -172,6 +172,8 @@ int remove(char* program) {
     if (ut.iequals(program, "xpilot")) {
         system("rm -rf \"$HOME/.cache/Justin Shannon\"");
         system("$(find $HOME -name xPilot)/uninstall");
+    } else if (ut.iequals(program, "swift")) {
+        system("$(find $HOME -name swift-*)/uninstall");
     } else {
         cout << "Program name not recognised." << endl;
     }
