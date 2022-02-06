@@ -24,6 +24,7 @@ size_t write_data(char *ptr, size_t size, size_t nmemb, void *userdata) {
 }
 
 //TODO move download function and make writing to output optional
+//TODO add progress indicator
 string downloadVersions(int program) {
 
     cout << "Downloading program version numbers" << endl;
@@ -97,11 +98,48 @@ int downloadXpilot() {
     return 0;
 }
 
+int downloadSwift() {
+    string programVersion = downloadVersions(1);
+
+    cout << "Downloading Swift " << programVersion << endl;
+
+    CURL* curl = curl_easy_init();
+    CURLcode res;
+    //TODO move to temp dir
+    FILE* output = fopen("swift.run", "wb");
+    string url = "https://github.com/swift-project/pilotclient/releases/download/v" + programVersion + "/swiftinstall" +
+            "er-linux-64-" + programVersion + ".run";
+
+    if (!curl) {
+        fprintf(stderr,"[-] Failed Initializing Curl\n");
+        exit(-1);
+    }
+
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA,output);
+    res = curl_easy_perform(curl);
+
+    if (res != CURLE_OK) {
+        fprintf(stderr,"[-] Could Not Fetch Webpage\n[+] Error: %s\n",curl_easy_strerror(res));
+        cout << res << endl;
+        exit(-2);
+    }
+
+    curl_easy_cleanup(curl);
+    fclose(output);
+
+    return 0;
+}
+
+//TODO move y/n to function
+//TODO allow y/n to just be \n
 int install(char* program) {
 
+    char* in;
+
     if (ut.iequals(program, "xpilot")) {
-        cout << "Download and install xPilot? [Y/n]: " << endl;
-        char* in;
+        cout << "Download and install xPilot? [y/n]: ";
         cin >> in;
 
         if (ut.iequals(in, "y")) {
@@ -112,8 +150,20 @@ int install(char* program) {
         } else {
             cout << "Operation cancelled by user" << endl;
         }
+    } else if (ut.iequals(program, "swift")) {
+        cout << "Download and install Swift? [y/n]: ";
+        cin >> in;
+
+        if (ut.iequals(in, "y")) {
+            downloadSwift();
+            system("chmod +x swift.run");
+            system("./swift.run");
+            system("rm swift.run");
+        } else {
+            cout << "Operation cancelled by user" << endl;
+        }
     } else {
-        cout << "Program name not recognised." << endl;
+            cout << "Program name not recognised." << endl;
     }
     return 0;
 }
@@ -131,7 +181,9 @@ int remove(char* program) {
 void showLicense() {
     cout << "This project is not endorsed by any VATSIM staff member." << endl;
     cout << "The xPilot 2.0.0 beta is licensed under GPL3. Redistribution is allowed under this license and express " <<
-    "permission was given by Justin Shannon." << endl << endl;
+    "permission was given by Justin Shannon." << endl;
+    cout << "The Swift beta is licensed under GPL3. Express permission to redistribute the proprietary installer was" <<
+    "given by Mat Sutcliffe." << endl << endl;
     cout << "libcURL 7.81.0 has a custom license. Usage is allowed under this license." << endl << endl;
 }
 
@@ -139,7 +191,7 @@ void showCommands() {
     cout << "-h - displays this page" << endl;
     cout << "-l - displays license information" << endl;
     cout << "-i - installs a pilot/ATC client from the following list - " << endl;
-    cout << "     xPilot 2.0.0 beta (X-Plane 11)" << endl;
+    cout << "     xPilot 2.0.0 beta (X-Plane 11), Swift (X-Plane 11, FlightGear)" << endl;
     cout << "-r - uninstalls a pilot/ATC client from the above list" << endl;
 }
 
@@ -155,14 +207,15 @@ int main(int argc, char** argv) {
             if (argc > 2) {
                 install(argv[2]);
             } else {
-                cout << "Please specify a program to install. Available options are xpilot." << endl;
+                //TODO only show uninstalled programs
+                cout << "Please specify a program to install. Available options are xPilot and Swift." << endl;
             }
         } else if (strcmp(argv[1], "-r") == 0) {
             if (argc > 2) {
                 remove(argv[2]);
             } else {
                 //TODO only show installed programs
-                cout << "Please specify a program to uninstall. Available options are xpilot." << endl;
+                cout << "Please specify a program to uninstall. Available options are xPilot and Swift." << endl;
             }
         } else if (strcmp(argv[1], "-h") == 0) {showCommands();}
         else if (strcmp(argv[1], "-l") == 0) {showLicense();}
