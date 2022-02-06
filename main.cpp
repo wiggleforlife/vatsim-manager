@@ -70,7 +70,7 @@ int downloadXpilot() {
     FILE* output = fopen("xpilot.run", "wb");
     string url = "https://github.com/xpilot-project/xpilot/releases/download/v" + programVersion + "/xPilot-" +
             programVersion + "-linux-x64-installer.run";
-    cout << url << endl;
+
     if (!curl) {
         fprintf(stderr,"[-] Failed Initializing Curl\n");
         exit(-1);
@@ -96,6 +96,7 @@ int downloadXpilot() {
 int install(char* program) {
     if (strcmp(program, "xpilot") == 0) {
         downloadXpilot();
+        system("chmod +x xpilot.run")
         system("./xpilot.run");
         system("rm xpilot.run");
     }
