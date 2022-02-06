@@ -3,7 +3,6 @@
 #include <curl/curl.h>
 #include <stdio.h>
 #include <cstdlib>
-#include <fstream>
 #include <vector>
 #include <sstream>
 #include "utils.h"
@@ -132,39 +131,26 @@ int downloadSwift() {
     return 0;
 }
 
-//TODO move y/n to function
-//TODO allow y/n to just be \n
 int install(char* program) {
 
-    char* in;
-
     if (ut.iequals(program, "xpilot")) {
-        cout << "Download and install xPilot? [y/n]: ";
-        cin >> in;
-
-        if (ut.iequals(in, "y")) {
+        if (ut.askForConfirmation("xPilot")) {
             downloadXpilot();
             system("chmod +x xpilot.run");
             system("./xpilot.run");
             system("rm xpilot.run");
-        } else {
-            cout << "Operation cancelled by user" << endl;
         }
     } else if (ut.iequals(program, "swift")) {
-        cout << "Download and install Swift? [y/n]: ";
-        cin >> in;
-
-        if (ut.iequals(in, "y")) {
+        if (ut.askForConfirmation("Swift")) {
             downloadSwift();
             system("chmod +x swift.run");
             system("./swift.run");
             system("rm swift.run");
-        } else {
-            cout << "Operation cancelled by user" << endl;
         }
     } else {
         cout << "Program name not recognised." << endl;
     }
+
     return 0;
 }
 
