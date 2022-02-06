@@ -10,7 +10,7 @@
 
 using namespace std;
 
-const char* version = "0.1.0";
+const char* version = "0.2.0";
 vector<string> versions;
 utils ut;
 
@@ -97,13 +97,21 @@ int downloadXpilot() {
     return 0;
 }
 
-//TODO confirm before installing
 int install(char* program) {
+
     if (ut.iequals(program, "xpilot")) {
-        downloadXpilot();
-        system("chmod +x xpilot.run");
-        system("./xpilot.run");
-        system("rm xpilot.run");
+        cout << "Download and install xPilot? [Y/n]: " << endl;
+        char* in;
+        cin >> in;
+
+        if (ut.iequals(in, "y")) {
+            downloadXpilot();
+            system("chmod +x xpilot.run");
+            system("./xpilot.run");
+            system("rm xpilot.run");
+        } else {
+            cout << "Operation cancelled by user" << endl;
+        }
     } else {
         cout << "Program name not recognised." << endl;
     }
@@ -117,6 +125,7 @@ int remove(char* program) {
     } else {
         cout << "Program name not recognised." << endl;
     }
+    return 0;
 }
 
 void showLicense() {
