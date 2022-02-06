@@ -1,13 +1,41 @@
 #include <iostream>
 #include <cstring>
+#include <curl/curl.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 using namespace std;
 
-char* version = "0.0.1";
+const char* version = "0.0.1";
 
 int downloadXpilot() {
 
+    CURL *curl = curl_easy_init();
+    //TODO move to temp dir
+    FILE *output = fopen("xpilot.run", "wb");
+    //TODO get url with latest linux build
+    const char* url = "https://github.com/xpilot-project/xpilot/releases/download/v2.0.0-beta.21/xPilot-2.0.0-beta.21-linux-x64-installer.run";
+    CURLcode res;
 
+    if (!curl) {
+        fprintf(stderr,"[-] Failed Initializing Curl\n");
+        exit(-1);
+    }
+
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA,output);
+    res = curl_easy_perform(curl);
+
+    if (res != CURLE_OK) {
+        fprintf(stderr,"[-] Could Not Fetch Webpage\n[+] Error: %s\n",curl_easy_strerror(res));
+        cout << res << endl;
+        exit(-2);
+    }
+
+    curl_easy_cleanup(curl);
+    fclose(output);
+    //TODO delete files
 
     return 0;
 }
