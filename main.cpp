@@ -148,7 +148,7 @@ int install(char* program) {
             system("rm swift.run");
         }
     } else {
-        cout << "Program name not recognised." << endl;
+        cout << "Program name not recognised." << endl << endl;
     }
 
     return 0;
@@ -161,7 +161,7 @@ int remove(char* program) {
     } else if (ut.iequals(program, "swift")) {
         system("$(find $HOME -name swift-*)/uninstall");
     } else {
-        cout << "Program name not recognised." << endl;
+        cout << "Program name not recognised." << endl << endl;
     }
     return 0;
 }
@@ -180,7 +180,7 @@ void showCommands() {
     cout << "-l - displays license information" << endl;
     cout << "-i - installs a pilot/ATC client from the following list - " << endl;
     cout << "     xPilot 2.0.0 beta (X-Plane 11), Swift (X-Plane 11, FlightGear)" << endl;
-    cout << "-r - uninstalls a pilot/ATC client from the above list" << endl;
+    cout << "-r - uninstalls a pilot/ATC client from the above list" << endl << endl;
 }
 
 int main(int argc, char** argv) {
@@ -196,19 +196,19 @@ int main(int argc, char** argv) {
                 install(argv[2]);
             } else {
                 //TODO only show uninstalled programs
-                cout << "Please specify a program to install. Available options are xPilot and Swift." << endl;
+                cout << "Please specify a program to install. Available options are xPilot and Swift." << endl << endl;
             }
         } else if (strcmp(argv[1], "-r") == 0) {
             if (argc > 2) {
                 remove(argv[2]);
             } else {
                 //TODO only show installed programs
-                cout << "Please specify a program to uninstall. Available options are xPilot and Swift." << endl;
+                cout << "Please specify a program to uninstall. Available options are xPilot and Swift." << endl << endl;
             }
         } else if (strcmp(argv[1], "-h") == 0) {showCommands();}
         else if (strcmp(argv[1], "-l") == 0) {showLicense();}
     } else {
-        cout << "No command specified. Use the -h flag for a command list." << endl;
+        cout << "No command specified. Use the -h flag for a command list." << endl << endl;
     }
     return 0;
 }

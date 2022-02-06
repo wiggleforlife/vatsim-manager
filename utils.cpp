@@ -20,7 +20,7 @@ bool utils::askForConfirmation(const char* program) {
     if (iequals(in, "y")) {
         return true;
     } else {
-        std::cout << "Operation cancelled by user" << std::endl;
+        std::cout << "Operation cancelled by user" << std::endl << std::endl;
         return false;
     }
 
