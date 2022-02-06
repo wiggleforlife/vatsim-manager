@@ -96,11 +96,18 @@ int downloadXpilot() {
 int install(char* program) {
     if (strcmp(program, "xpilot") == 0) {
         downloadXpilot();
-        system("chmod +x xpilot.run")
+        system("chmod +x xpilot.run");
         system("./xpilot.run");
         system("rm xpilot.run");
     }
     return 0;
+}
+
+int remove(char* program) {
+    if (strcmp(program, "xpilot") == 0) {
+        system("rm -rf \"$HOME/.cache/Justin Shannon\"");
+        system("$(find $HOME -name xPilot)/uninstall");
+    } 
 }
 
 void showLicense() {
@@ -127,6 +134,12 @@ int main(int argc, char** argv) {
         if (strcmp(argv[1], "-i") == 0) {
             if (argc > 2) {
                 install(argv[2]);
+            } else {
+                cout << "Please specify a program to install. Available options are xpilot." << endl;
+            }
+        } else if (strcmp(argv[1], "-r") == 0) {
+            if (argc > 2) {
+                remove(argv[2]);
             } else {
                 cout << "Please specify a program to install. Available options are xpilot." << endl;
             }
