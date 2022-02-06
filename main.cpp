@@ -2,7 +2,7 @@
 #include <cstring>
 #include <curl/curl.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <fstream>
 #include <vector>
 #include <sstream>
@@ -68,9 +68,9 @@ int downloadXpilot() {
     CURLcode res;
     //TODO move to temp dir
     FILE* output = fopen("xpilot.run", "wb");
-    //TODO get url with latest linux build
-    string url = "https://github.com/xpilot-project/xpilot/releases/download/" + programVersion + "/xPilot-" + programVersion + "linux-x64-installer.run";
-
+    string url = "https://github.com/xpilot-project/xpilot/releases/download/v" + programVersion + "/xPilot-" +
+            programVersion + "-linux-x64-installer.run";
+    cout << url << endl;
     if (!curl) {
         fprintf(stderr,"[-] Failed Initializing Curl\n");
         exit(-1);
@@ -89,15 +89,15 @@ int downloadXpilot() {
 
     curl_easy_cleanup(curl);
     fclose(output);
-    //TODO delete files
 
     return 0;
 }
 
-//TODO return something for error checking
 int install(char* program) {
     if (strcmp(program, "xpilot") == 0) {
         downloadXpilot();
+        system("./xpilot.run");
+        system("rm xpilot.run");
     }
     return 0;
 }
