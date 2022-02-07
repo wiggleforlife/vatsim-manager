@@ -1,7 +1,7 @@
 # vatsim-mgr
 ### *A VATSIM client install manager for Linux*
-![License](https://img.shields.io/github/license/wiggleforlife/vatsim-mgr?style=for-the-badge)
-![Repo size](https://img.shields.io/github/repo-size/wiggleforlife/vatsim-mgr?style=for-the-badge)
+![License](https://img.shields.io/github/license/wiggleforlife/vatsim-manager?style=for-the-badge)
+![Repo size](https://img.shields.io/github/repo-size/wiggleforlife/vatsim-manager?style=for-the-badge)
 ![Current version](https://img.shields.io/aur/version/vatsim-manager?style=for-the-badge)
 ![AUR maintainers](https://img.shields.io/aur/maintainer/vatsim-manager?style=for-the-badge)
 
@@ -11,7 +11,6 @@ Created by Cian Ormond with no endorsements by VATSIM staff members. For more in
 * Install and uninstall clients
 
 ### Planned feature list
-* Consistent naming with the AUR package (`vatsim-manager` on the package, executable and repo)
 * Configure xPilot's AppConfig with user input
 * Keep track of installed clients, versions and paths
   * Disallow uninstalling absent clients
