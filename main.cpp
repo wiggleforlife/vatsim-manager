@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const char* version = "0.2.0";
+const char* version = "0.2.1";
 
 utils ut;
 download dl;

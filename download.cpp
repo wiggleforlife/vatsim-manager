@@ -12,7 +12,6 @@ size_t download::write_data(char *ptr, size_t size, size_t nmemb, void *userdata
     return count;
 }
 
-//TODO move download function and make writing to output optional
 //TODO add progress indicator
 std::vector<std::string> download::downloadPilotVersions() {
 
@@ -53,7 +52,6 @@ std::vector<std::string> download::downloadPilotVersions() {
     return versions;
 }
 
-//TODO make modular
 int download::downloadPilotClient(int program) {
 
     std::string programVersion = download::downloadPilotVersions().at(program);
@@ -77,8 +75,10 @@ int download::downloadPilotClient(int program) {
 
     CURL* curl = curl_easy_init();
     CURLcode res;
+
     //TODO move to /var/lib
-    FILE* output = fopen(programName.c_str() + ".run", "wb");
+    std::string outputName = programName + ".run";
+    FILE* output = fopen(outputName.c_str(), "wb");
 
     if (!curl) {
         fprintf(stderr,"[-] Failed Initializing Curl\n");
