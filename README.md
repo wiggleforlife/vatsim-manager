@@ -9,10 +9,11 @@ Created by Cian Ormond with no endorsements by VATSIM staff members. For more in
 
 ### Included clients
 * xPilot 2.0.0 beta
+* Swift beta
 
 ### Dependencies
 * libCURL >=7.68.0
 * PkgConfig >=0.29.1
 
 ### Packages
-* [AUR](https://aur.archlinux.com/vatsim-manager) (WIP)
+* [AUR](https://aur.archlinux.com/vatsim-manager)
