@@ -1,148 +1,32 @@
 #include <iostream>
 #include <cstring>
 #include <curl/curl.h>
-#include <stdio.h>
+#include <cstdio>
 #include <cstdlib>
-#include <vector>
-#include <sstream>
 #include "utils.h"
+#include "download.h"
 
 using namespace std;
 
 const char* version = "0.2.0";
-vector<string> versions;
+
 utils ut;
+download dl;
 
 //TODO keep track of installed programs and add --refresh option
 
-size_t write_data(char *ptr, size_t size, size_t nmemb, void *userdata) {
-    std::ostringstream *stream = (std::ostringstream*)userdata;
-    size_t count = size * nmemb;
-    stream->write(ptr, count);
-    return count;
-}
-
-//TODO move download function and make writing to output optional
-//TODO add progress indicator
-string downloadVersions(int program) {
-
-    cout << "Downloading program version numbers" << endl;
-
-    CURL* curl = curl_easy_init();
-    CURLcode res;
-    const char* url = "https://raw.githubusercontent.com/wiggleforlife/vatsim-mgr/master/VERSIONS";
-    ostringstream stream;
-
-    if (!curl) {
-        fprintf(stderr,"[-] Failed Initializing Curl\n");
-        exit(-1);
-    }
-
-    curl_easy_setopt(curl, CURLOPT_URL, url);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &stream);
-    res = curl_easy_perform(curl);
-
-    if (res != CURLE_OK) {
-        fprintf(stderr,"[-] Could Not Fetch Webpage\n[+] Error: %s\n",curl_easy_strerror(res));
-        cout << res << endl;
-        exit(-2);
-    }
-
-    curl_easy_cleanup(curl);
-    string line;
-    string versionsTemp = stream.str();
-    stringstream ss(versionsTemp);
-
-    while(getline(ss, line, '\n')) {
-        line = line.substr(line.find("=") + 1, line.length());
-        versions.push_back(line);
-    }
-
-    return versions.at(program);
-}
-
-int downloadXpilot() {
-
-    string programVersion = downloadVersions(0);
-
-    cout << "Downloading xPilot " << programVersion << endl;
-
-    CURL* curl = curl_easy_init();
-    CURLcode res;
-    //TODO move to temp dir
-    FILE* output = fopen("xpilot.run", "wb");
-    string url = "https://github.com/xpilot-project/xpilot/releases/download/v" + programVersion + "/xPilot-" +
-            programVersion + "-linux-x64-installer.run";
-
-    if (!curl) {
-        fprintf(stderr,"[-] Failed Initializing Curl\n");
-        exit(-1);
-    }
-
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA,output);
-    res = curl_easy_perform(curl);
-
-    if (res != CURLE_OK) {
-        fprintf(stderr,"[-] Could Not Fetch Webpage\n[+] Error: %s\n",curl_easy_strerror(res));
-        cout << res << endl;
-        exit(-2);
-    }
-
-    curl_easy_cleanup(curl);
-    fclose(output);
-
-    return 0;
-}
-
-int downloadSwift() {
-    string programVersion = downloadVersions(1);
-
-    cout << "Downloading Swift " << programVersion << endl;
-
-    CURL* curl = curl_easy_init();
-    CURLcode res;
-    //TODO move to temp dir
-    FILE* output = fopen("swift.run", "wb");
-    string url = "https://github.com/swift-project/pilotclient/releases/download/v" + programVersion + "/swiftinstall" +
-            "er-linux-64-" + programVersion + ".run";
-
-    if (!curl) {
-        fprintf(stderr,"[-] Failed Initializing Curl\n");
-        exit(-1);
-    }
-
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA,output);
-    res = curl_easy_perform(curl);
-
-    if (res != CURLE_OK) {
-        fprintf(stderr,"[-] Could Not Fetch Webpage\n[+] Error: %s\n",curl_easy_strerror(res));
-        cout << res << endl;
-        exit(-2);
-    }
-
-    curl_easy_cleanup(curl);
-    fclose(output);
-
-    return 0;
-}
-
-int install(char* program) {
+int install(const char* program) {
 
     if (ut.iequals(program, "xpilot")) {
         if (ut.askForConfirmation("xPilot")) {
-            downloadXpilot();
+            dl.downloadPilotClient(0);
             system("chmod +x xpilot.run");
             system("./xpilot.run");
             system("rm xpilot.run");
         }
     } else if (ut.iequals(program, "swift")) {
         if (ut.askForConfirmation("Swift")) {
-            downloadSwift();
+            dl.downloadPilotClient(1);
             system("chmod +x swift.run");
             system("./swift.run");
             system("rm swift.run");
@@ -154,7 +38,7 @@ int install(char* program) {
     return 0;
 }
 
-int remove(char* program) {
+int remove(const char* program) {
     if (ut.iequals(program, "xpilot")) {
         system("rm -rf \"$HOME/.cache/Justin Shannon\"");
         system("$(find $HOME -name xPilot)/uninstall");
