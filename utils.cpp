@@ -10,14 +10,13 @@ bool utils::iequals(const std::string& a, const std::string& b)
                       });
 }
 
-//TODO allow y/n to just be \n
 bool utils::askForConfirmation(const char* program) {
-    char* in;
+    char in[1];
 
-    std::cout << "Download install " << program << "? [y/n]: ";
-    std::cin >> in;
+    std::cout << "Download install " << program << "? [Y/n]: ";
+    std::cin.getline(in, 2, '\n');
 
-    if (iequals(in, "y")) {
+    if (iequals(in, "y") || iequals(in, "")) {
         return true;
     } else {
         std::cout << "Operation cancelled by user" << std::endl << std::endl;

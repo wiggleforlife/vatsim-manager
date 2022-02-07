@@ -52,7 +52,7 @@ string downloadVersions(int program) {
     curl_easy_cleanup(curl);
     string line;
     string versionsTemp = stream.str();
-    std::stringstream ss(versionsTemp);
+    stringstream ss(versionsTemp);
 
     while(getline(ss, line, '\n')) {
         line = line.substr(line.find("=") + 1, line.length());
@@ -159,6 +159,7 @@ int remove(char* program) {
         system("rm -rf \"$HOME/.cache/Justin Shannon\"");
         system("$(find $HOME -name xPilot)/uninstall");
     } else if (ut.iequals(program, "swift")) {
+        //doesn't work if the qt sdk is installed
         system("$(find $HOME -name swift-*)/uninstall");
     } else {
         cout << "Program name not recognised." << endl << endl;
@@ -168,8 +169,8 @@ int remove(char* program) {
 
 void showLicense() {
     cout << "This project is not endorsed by any VATSIM staff member." << endl;
-    cout << "The xPilot 2.0.0 beta is licensed under GPL3. Redistribution is allowed under this license and express " <<
-    "permission was given by Justin Shannon." << endl;
+    cout << "The xPilot 2.0.0 beta is licensed under GPL3. Express permission to redistribute the proprietary " <<
+    "installer was given by Justin Shannon." << endl;
     cout << "The Swift beta is licensed under GPL3. Express permission to redistribute the proprietary installer was" <<
     "given by Mat Sutcliffe." << endl << endl;
     cout << "libcURL 7.81.0 has a custom license. Usage is allowed under this license." << endl << endl;
