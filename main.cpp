@@ -173,6 +173,10 @@ void showLicense() {
     "installer was given by Justin Shannon." << endl;
     cout << "The Swift beta is licensed under GPL3. Express permission to redistribute the proprietary installer was" <<
     "given by Mat Sutcliffe." << endl << endl;
+    cout << "vSTARS is proprietary software. Express permission to redistribute the proprietary installer was given " <<
+    "by Ross Carlson." << endl;
+    cout << "vERAM is proprietary software. Express permission to redistribute the proprietary installer was given " <<
+    "by Ross Carlson." << endl << endl;
     cout << "libcURL 7.81.0 has a custom license. Usage is allowed under this license." << endl << endl;
 }
 
