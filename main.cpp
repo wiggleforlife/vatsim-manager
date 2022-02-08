@@ -15,22 +15,36 @@ download dl;
 
 //TODO keep track of installed programs and add --refresh option
 
-int install(const char* program) {
-    //TODO simplify
+int install(const char* program, bool forceDownload) {
+
+    string programName;
+    int programIndex;
+
     if (ut.iequals(program, "xpilot")) {
-        if (ut.askForConfirmation("xPilot")) {
-            dl.downloadPilotClient(0);
-            system("chmod +x /tmp/vatsim-manager/xPilot.run");
-            system("/tmp/vatsim-manager/xPilot.run");
-        }
+        programName = "xPilot";
+        programIndex = 0;
     } else if (ut.iequals(program, "swift")) {
-        if (ut.askForConfirmation("Swift")) {
-            dl.downloadPilotClient(1);
-            system("chmod +x /tmp/vatsim-manager/Swift.run");
-            system("/tmp/vatsim-manager/Swift.run");
-        }
+        programName = "Swift";
+        programIndex = 1;
     } else {
         cout << "Program name not recognised." << endl << endl;
+        return 0;
+    }
+
+    string cmdOut;
+    if (ut.askForConfirmation(programName.c_str())) {
+        system(("find /tmp/vatsim-manager/" + programName + ".run > /tmp/vatsim-manager/findinstaller")
+            .c_str());
+        if (!ut.iequals(ut.readFile("/tmp/vatsim-manager/findinstaller"), "/tmp/vatsim-manager/" +
+            programName + ".run") || forceDownload) {
+            dl.downloadPilotClient(programIndex);
+        } else {
+            //TODO detect old versions
+            cout << "Found installer in /tmp/vatsim-manager/" << endl << "If you encounter errors or this is an old " <<
+                "installer, use --force-download" << endl << endl;
+        }
+        system(("chmod +x /tmp/vatsim-manager/" + programName + ".run").c_str());
+        system(("/tmp/vatsim-manager/" + programName + ".run").c_str());
     }
 
     return 0;
@@ -75,25 +89,39 @@ int main(int argc, char** argv) {
     cout << endl << "VATSIM Program Manager version " << version << " by Cian Ormond" << endl;
     cout << "Licensed under GPL3. For licensing of programs included, use -l." << endl << endl;
 
-    //TODO remove this if statement bs
-    //TODO add config option for xPilot's AppConfig
+    //TODO clean this up
     if (argc > 1) {
+
         if (strcmp(argv[1], "-i") == 0) {
-            if (argc > 2) {
-                install(argv[2]);
-            } else {
-                //TODO only show uninstalled programs
-                cout << "Please specify a program to install. Available options are xPilot and Swift." << endl << endl;
+
+            if (argc == 3) {
+                install(argv[2], false);
+            } else if (argc == 4) {
+                if (ut.iequals(argv[3], "--force-download")) {
+                    install(argv[2], true);
+                } else if (ut.iequals(argv[2], "--force-download")) {
+                    install(argv[3], true);
+                } else {
+                    install(argv[2], false);
+                }
             }
+            else {
+                    //TODO only show uninstalled programs
+                    cout << "Please specify a program to install. Available options are xPilot and Swift." << endl << endl;
+            }
+
         } else if (strcmp(argv[1], "-r") == 0) {
             if (argc > 2) {
                 remove(argv[2]);
             } else {
                 //TODO only show installed programs
-                cout << "Please specify a program to uninstall. Available options are xPilot and Swift." << endl << endl;
+                cout << "Please specify a program to uninstall. Available options are xPilot and Swift." << endl
+                     << endl;
             }
-        } else if (strcmp(argv[1], "-h") == 0) {showCommands();}
+        }
+        else if (strcmp(argv[1], "-h") == 0) {showCommands();}
         else if (strcmp(argv[1], "-l") == 0) {showLicense();}
+
     } else {
         cout << "No command specified. Use the -h flag for a command list." << endl << endl;
     }
