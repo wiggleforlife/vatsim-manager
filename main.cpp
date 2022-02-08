@@ -16,20 +16,18 @@ download dl;
 //TODO keep track of installed programs and add --refresh option
 
 int install(const char* program) {
-
+    //TODO simplify
     if (ut.iequals(program, "xpilot")) {
         if (ut.askForConfirmation("xPilot")) {
             dl.downloadPilotClient(0);
-            system("chmod +x xpilot.run");
-            system("./xpilot.run");
-            system("rm xpilot.run");
+            system("chmod +x /tmp/vatsim-manager/xPilot.run");
+            system("/tmp/vatsim-manager/xPilot.run");
         }
     } else if (ut.iequals(program, "swift")) {
         if (ut.askForConfirmation("Swift")) {
             dl.downloadPilotClient(1);
-            system("chmod +x swift.run");
-            system("./swift.run");
-            system("rm swift.run");
+            system("chmod +x /tmp/vatsim-manager/Swift.run");
+            system("/tmp/vatsim-manager/Swift.run");
         }
     } else {
         cout << "Program name not recognised." << endl << endl;

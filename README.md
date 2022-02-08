@@ -1,4 +1,4 @@
-# vatsim-mgr
+# vatsim-manager
 ### *A VATSIM client install manager for Linux*
 ![License](https://img.shields.io/github/license/wiggleforlife/vatsim-manager?style=for-the-badge)
 ![Repo size](https://img.shields.io/github/repo-size/wiggleforlife/vatsim-manager?style=for-the-badge)
@@ -26,7 +26,7 @@ Created by Cian Ormond with no endorsements by VATSIM staff members. For more in
 * PkgConfig >=0.29.1
 
 ### Installation
-* [vatsim-manager](https://aur.archlinux.org/vatsim-manager) on the Arch User Repository
+* [vatsim-manager](https://aur.archlinux.org/packages/vatsim-manager) on the Arch User Repository
 * Build from [source](https://github.com/wiggleforlife/vatsim-manager/tree/release)
   * `git clone https://github.com/wiggleforlife/vatsim-manager.git`
   * `git switch release`
