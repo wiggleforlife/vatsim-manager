@@ -52,6 +52,7 @@ int install(const char* program, bool forceDownload) {
     return 0;
 }
 
+//TODO change to directory in state.json
 int remove(const char* program) {
     if (ut.iequals(program, "xpilot")) {
         system("rm -rf \"$HOME/.cache/Justin Shannon\"");
@@ -91,9 +92,15 @@ int main(int argc, char** argv) {
     cout << endl << "VATSIM Program Manager version " << gl.version << " by Cian Ormond" << endl;
     cout << "Licensed under GPL3. For licensing of programs included, use -l." << endl << endl;
 
-    std::system("mkdir -p /tmp/vatsim-manager ~/.local/share/vatsim-manager");
+    //TODO move this somewhere else
+    cs.findHome();
 
-    cs.createState();
+    system("mkdir -p /tmp/vatsim-manager ~/.local/share/vatsim-manager");
+
+    system("find ~/.local/share/vatsim-manager/ -name state.json > /tmp/vatsim-manager/findres 2>&1");
+    if (ut.iequals(ut.readFile("/tmp/vatsim-manager/findres"), cs.homedir + "/.local/share/vatsim-manager/state.json")) {
+        cs.parseState();
+    } else { cs.createState(); }
 
     //TODO clean this up
     if (argc > 1) {

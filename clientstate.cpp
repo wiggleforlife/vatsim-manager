@@ -5,6 +5,7 @@
 #include <pwd.h>
 #include <json/json.h>
 #include <fstream>
+#include <ctime>
 
 #include "clientstate.h"
 #include "utils.h"
@@ -14,23 +15,22 @@
 utils ut_cs;
 global gl_cs;
 
-std::string homedir;
-
-int clientstate::createState() {
-
+int clientstate::findHome() {
     if ((homedir = getenv("HOME")).c_str() == NULL) {
         homedir = getpwuid(getuid())->pw_dir;
     }
+    return 0;
+}
+
+int clientstate::createState() {
 
     std::string write = gl_cs.version + '\n';
     std::vector<std::vector<std::string>> input = checkClients();
-    /*
-    for (int i = 0; i < input.size(); i++) {
-        std::cout << input.at(i) << '\n';
-    }
-     */
 
     Json::Value stateOut;
+
+    std::time_t result = std::time(nullptr);
+    stateOut["time"] = result;
 
     stateOut["installed"] = vectorToJson(input.at(0));
     stateOut["paths"] = vectorToJson(input.at(1));
@@ -85,16 +85,36 @@ std::vector<std::vector<std::string>> clientstate::checkClients() {
     return res;
 }
 
-std::vector<std::string> clientstate::parseState() {
-    std::vector<std::string> res;
+std::vector<std::vector<std::string>> clientstate::parseState() {
+    std::vector<std::vector<std::string>> res;
+    Json::Value stateJson;
+    std::ifstream stateFile((homedir + "/.local/share/vatsim-manager/state.json").c_str(), std::ifstream::binary);
+    stateFile >> stateJson;
 
-    system("find /var/lib/vatsim-manager state > /tmp/vatsim-manager/findres 2>&1");
-    if (ut_cs.iequals(ut_cs.readFile("/tmp/vatsim-manager/findres"), "/var/lib/vatsim-manager/state")) {
+    for (int i = 0; i < 3; i++) {
+        std::vector<std::string> temp;
 
-    } else {
-        //TODO create state doc
-        return parseState();
+        std::string arrayName;
+        switch (i) {
+            case 0:
+                arrayName = "installed";
+                break;
+            case 1:
+                arrayName = "paths";
+                break;
+            case 2:
+                arrayName = "versions";
+                break;
+        }
+
+        for (int i = 0; i < stateJson[arrayName].size(); i++) {
+            temp.push_back(stateJson[arrayName].get(i, "").asString());
+        }
+
+        res.push_back(temp);
     }
+
+
     return res;
 }
 

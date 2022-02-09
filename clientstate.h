@@ -8,8 +8,10 @@
 
 class clientstate {
 public:
+    int findHome();
     int createState();
-    std::vector<std::string> parseState();
+    std::vector<std::vector<std::string>> parseState();
+    std::string homedir;
 private:
     std::vector<std::vector<std::string>> checkClients();
 
