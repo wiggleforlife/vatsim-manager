@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
     cout << endl << "VATSIM Program Manager version " << gl.version << " by Cian Ormond" << endl;
     cout << "Licensed under GPL3. For licensing of programs included, use -l." << endl << endl;
 
-    std::system("mkdir -p /tmp/vatsim-manager");
+    std::system("mkdir -p /tmp/vatsim-manager ~/.local/share/vatsim-manager");
 
     cs.createState();
 

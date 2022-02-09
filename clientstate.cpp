@@ -16,7 +16,6 @@ global gl_cs;
 
 std::string homedir;
 
-//TODO move to json config
 int clientstate::createState() {
 
     if ((homedir = getenv("HOME")).c_str() == NULL) {
@@ -24,30 +23,43 @@ int clientstate::createState() {
     }
 
     std::string write = gl_cs.version + '\n';
-    std::vector<std::string> input = checkVersions();
+    std::vector<std::vector<std::string>> input = checkClients();
+    /*
     for (int i = 0; i < input.size(); i++) {
         std::cout << input.at(i) << '\n';
     }
+     */
+
+    Json::Value stateOut;
+
+    stateOut["installed"] = vectorToJson(input.at(0));
+    stateOut["paths"] = vectorToJson(input.at(1));
+    stateOut["versions"] = vectorToJson(input.at(2));
+
+    std::ofstream out;
+    out.open((homedir + "/.local/share/vatsim-manager/state.json").c_str());
+    out << stateOut;
+    out.close();
 
 }
 
-std::vector<std::string> clientstate::checkVersions() {
-    std::vector<std::string> res;
-
+std::vector<std::vector<std::string>> clientstate::checkClients() {
+    std::vector<std::vector<std::string>> res;
+    std::vector<std::string> installed;
+    std::vector<std::string> paths;
+    std::vector<std::string> versions;
 
     //xpilot path from ~/.local/share/org.vatsim.xpilot/lastinstallpath.txt
     system("find ~/.local/share/org.vatsim.xpilot -name lastinstallpath.txt > /tmp/vatsim-manager/findres 2>&1");
     if (ut_cs.iequals(ut_cs.readFile("/tmp/vatsim-manager/findres"), homedir + "/.local/share/org.vatsim.xpilot/lastinstallpath.txt")) {
 
-        res.push_back(ut_cs.readFile((homedir + "/.local/share/org.vatsim.xpilot/lastinstallpath.txt").c_str()));
+        installed.push_back("xpilot");
+
+        paths.push_back(ut_cs.readFile((homedir + "/.local/share/org.vatsim.xpilot/lastinstallpath.txt").c_str()));
 
         //TODO xpilot version will be from a flag in the next update
-        system((res.at(0) + "/xPilot.AppImage --appimage-version > /tmp/vatsim-manager/findres 2>&1").c_str());
-        res.push_back(ut_cs.readFile("/tmp/vatsim-manager/findres"));
-
-    } else {
-        res.push_back("n");
-        res.push_back("n");
+        system((paths.at(0) + "/xPilot.AppImage --appimage-version > /tmp/vatsim-manager/findres 2>&1").c_str());
+        versions.push_back(ut_cs.readFile("/tmp/vatsim-manager/findres"));
     }
 
     //swift path and version from ~/.local/share/org.swiftproject/apps.json
@@ -58,14 +70,17 @@ std::vector<std::string> clientstate::checkVersions() {
         std::ifstream swiftFile((homedir + "/.local/share/org.swiftproject/apps.json").c_str(), std::ifstream::binary);
         swiftFile >> swiftJson;
 
+        installed.push_back("swift");
         //TODO remove /bin
-        res.push_back(swiftJson["containerbase"][0].get("exePath", "n").asString());
-        res.push_back(swiftJson["containerbase"][0].get("version", "n").asString());
+        paths.push_back(swiftJson["containerbase"][0].get("exePath", "n").asString());
+        versions.push_back(swiftJson["containerbase"][0].get("version", "n").asString());
 
-    } else {
-        res.push_back("n");
-        res.push_back("n");
     }
+
+
+    res.push_back(installed);
+    res.push_back(paths);
+    res.push_back(versions);
 
     return res;
 }
