@@ -1,17 +1,19 @@
 #include <iostream>
 #include <cstring>
-#include <curl/curl.h>
 #include <cstdio>
 #include <cstdlib>
+
 #include "utils.h"
 #include "download.h"
+#include "global.h"
+#include "clientstate.h"
 
 using namespace std;
 
-const char* version = "0.2.1";
-
 utils ut;
 download dl;
+global gl;
+clientstate cs;
 
 //TODO keep track of installed programs and add --refresh option
 
@@ -33,9 +35,9 @@ int install(const char* program, bool forceDownload) {
 
     string cmdOut;
     if (ut.askForConfirmation(programName.c_str())) {
-        system(("find /tmp/vatsim-manager/" + programName + ".run > /tmp/vatsim-manager/findinstaller")
+        system(("find /tmp/vatsim-manager/" + programName + ".run > /tmp/vatsim-manager/findinstaller 2>&1")
             .c_str());
-        if (!ut.iequals(ut.readFile("/tmp/vatsim-manager/findinstaller"), "/tmp/vatsim-manager/" +
+        if (!ut.iequals(ut.readFile("/tmp/vatsim-manager/findres"), "/tmp/vatsim-manager/" +
             programName + ".run") || forceDownload) {
             dl.downloadPilotClient(programIndex);
         } else {
@@ -53,10 +55,10 @@ int install(const char* program, bool forceDownload) {
 int remove(const char* program) {
     if (ut.iequals(program, "xpilot")) {
         system("rm -rf \"$HOME/.cache/Justin Shannon\"");
-        system("$(find $HOME -name xPilot)/uninstall");
+        system("$(find $HOME -name xPilot)/uninstall > /dev/null 2>&1");
     } else if (ut.iequals(program, "swift")) {
         //doesn't work if the qt sdk is installed
-        system("$(find $HOME -name swift-*)/uninstall");
+        system("$(find $HOME -name swift-*)/uninstall > /dev/null 2>&1");
     } else {
         cout << "Program name not recognised." << endl << endl;
     }
@@ -86,8 +88,12 @@ void showCommands() {
 
 int main(int argc, char** argv) {
 
-    cout << endl << "VATSIM Program Manager version " << version << " by Cian Ormond" << endl;
+    cout << endl << "VATSIM Program Manager version " << gl.version << " by Cian Ormond" << endl;
     cout << "Licensed under GPL3. For licensing of programs included, use -l." << endl << endl;
+
+    std::system("mkdir -p /tmp/vatsim-manager");
+
+    cs.createState();
 
     //TODO clean this up
     if (argc > 1) {

@@ -23,6 +23,7 @@ Created by Cian Ormond with no endorsements by VATSIM staff members. For more in
 
 ### Dependencies
 * libCURL >=7.68.0
+* jsoncpp >=1.7.4
 * PkgConfig >=0.29.1
 
 ### Installation

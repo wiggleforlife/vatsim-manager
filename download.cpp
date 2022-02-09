@@ -76,8 +76,6 @@ int download::downloadPilotClient(int program) {
     CURL* curl = curl_easy_init();
     CURLcode res;
 
-    //TODO use installer in tmp if available, add --force-download flag
-    std::system("mkdir -p /tmp/vatsim-manager");
     std::string outputName = "/tmp/vatsim-manager/" + programName + ".run";
     FILE* output = fopen(outputName.c_str(), "wb");
 
