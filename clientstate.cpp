@@ -59,8 +59,8 @@ std::vector<std::string> clientstate::checkVersions() {
         swiftFile >> swiftJson;
 
         //TODO remove /bin
-        res.push_back(swiftJson["containerbase"].get("exePath", "n").asString());
-        res.push_back(swiftJson["containerbase"].get("version", "n").asString());
+        res.push_back(swiftJson["containerbase"][0].get("exePath", "n").asString());
+        res.push_back(swiftJson["containerbase"][0].get("version", "n").asString());
 
     } else {
         res.push_back("n");
