@@ -52,7 +52,7 @@ std::vector<std::vector<std::string>> clientstate::checkClients() {
     //xpilot path from ~/.local/share/org.vatsim.xpilot/lastinstallpath.txt
     system("find ~/.local/share/org.vatsim.xpilot -name lastinstallpath.txt > /tmp/vatsim-manager/findres 2>&1");
     if (ut_cs.iequals(ut_cs.readFile("/tmp/vatsim-manager/findres"), homedir + "/.local/share/org.vatsim.xpilot/lastinstallpath.txt")) {
-
+        //TODO only mark xpilot as installed if there is an appimage
         installed.push_back("xpilot");
 
         paths.push_back(ut_cs.readFile((homedir + "/.local/share/org.vatsim.xpilot/lastinstallpath.txt").c_str()));

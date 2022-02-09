@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cstring>
 #include <vector>
+#include <algorithm>
 
 bool utils::iequals(const std::string& a, const std::string& b)
 {
@@ -44,4 +45,14 @@ std::string utils::readFile(const char* filename) {
     }
 
     return output;
+}
+
+int utils::findInVector(std::vector<std::string> arr, std::string item) {
+
+    for (auto i = 0; i < arr.size(); ++i) {
+        if (iequals(arr[i], item))
+            return i;
+    }
+
+    return -1;
 }
