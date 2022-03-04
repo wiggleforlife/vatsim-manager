@@ -53,6 +53,5 @@ int utils::findInVector(std::vector<std::string> arr, std::string item) {
         if (iequals(arr[i], item))
             return i;
     }
-
     return -1;
 }
