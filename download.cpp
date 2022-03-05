@@ -4,6 +4,7 @@
 #include <curl/curl.h>
 #include <string>
 #include <sstream>
+#include <math.h>
 
 size_t download::write_data(char *ptr, size_t size, size_t nmemb, void *userdata) {
     std::ostringstream *stream = (std::ostringstream*)userdata;
@@ -12,7 +13,6 @@ size_t download::write_data(char *ptr, size_t size, size_t nmemb, void *userdata
     return count;
 }
 
-//TODO add progress indicator
 std::vector<std::string> download::downloadPilotVersions() {
 
     std::cout << "Downloading program version numbers" << std::endl;
@@ -86,7 +86,9 @@ int download::downloadPilotClient(int program) {
 
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA,output);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, output);
+    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
+    curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
     res = curl_easy_perform(curl);
 
     if (res != CURLE_OK) {
@@ -98,5 +100,39 @@ int download::downloadPilotClient(int program) {
     curl_easy_cleanup(curl);
     fclose(output);
 
+    return 0;
+}
+
+// https://stackoverflow.com/questions/1637587/c-libcurl-console-progress-bar
+int download::progress_func(void* ptr, double TotalToDownload, double NowDownloaded, double TotalToUpload,
+                            double NowUploaded)
+{
+    // ensure that the file to be downloaded is not empty
+    // because that would cause a division by zero error later on
+    if (TotalToDownload <= 0.0) {
+        return 0;
+    }
+
+    // how wide you want the progress meter to be
+    int totaldotz=40;
+    double fractiondownloaded = NowDownloaded / TotalToDownload;
+    // part of the progressmeter that's already "full"
+    int dotz = (int) round(fractiondownloaded * totaldotz);
+
+    // create the "meter"
+    int ii=0;
+    printf("%3.0f%% [",fractiondownloaded*100);
+    // part  that's full already
+    for ( ; ii < dotz;ii++) {
+        printf("=");
+    }
+    // remaining part (spaces)
+    for ( ; ii < totaldotz;ii++) {
+        printf(" ");
+    }
+    // and back to line begin - do not forget the fflush to avoid output buffering problems!
+    printf("]\r");
+    fflush(stdout);
+    // if you don't return 0, the transfer will be aborted - see the documentation
     return 0;
 }
