@@ -5,7 +5,7 @@
 ![Current version](https://img.shields.io/aur/version/vatsim-manager?style=for-the-badge)
 ![AUR maintainers](https://img.shields.io/aur/maintainer/vatsim-manager?style=for-the-badge)
 
-Created by Cian Ormond with no endorsements by VATSIM staff members. For more info, run `vatsim-mgr -L`.
+Created by Cian Ormond with no endorsements by VATSIM staff members. For more info, run `vatsim-manager -L`.
 
 ### Current feature list
 * Install and uninstall clients
@@ -35,7 +35,7 @@ Created by Cian Ormond with no endorsements by VATSIM staff members. For more in
   * `mkdir build && cd build`
   * `cmake ..`
   * `make`
-  * `sudo` or `doas mv vatsim-mgr /usr/bin/`
+  * `sudo` or `doas mv vatsim-manager /usr/bin/`
 
 ### Contribution
 * Fork this repository and checkout a branch with the name of the patch
