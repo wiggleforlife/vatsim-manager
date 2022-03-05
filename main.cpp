@@ -39,9 +39,9 @@ int install(const char* program, bool forceDownload) {
     string cmdOut;
     if (ut.askForConfirmation(programName.c_str())) {
         system(("find /tmp/vatsim-manager/" + programName + ".run > /tmp/vatsim-manager/findinstaller 2>&1")
-            .c_str());
-        if (!ut.iequals(ut.readFile("/tmp/vatsim-manager/findres"), "/tmp/vatsim-manager/" +
-            programName + ".run") || forceDownload) {
+                       .c_str());
+        if (!ut.iequals(ut.readFile("/tmp/vatsim-manager/findinstaller"), "/tmp/vatsim-manager/" +
+                                                                    programName + ".run") || forceDownload) {
             dl.downloadPilotClient(programIndex);
         } else {
             //TODO detect old versions
@@ -61,6 +61,7 @@ int install(const char* program, bool forceDownload) {
 int remove(const char* program) {
     if (ut.iequals(program, "xpilot")) {
         system("rm -rf \"$HOME/.cache/Justin Shannon\"");
+        cout << "Launching uninstaller" << endl;
         system("$(find $HOME -name xPilot)/uninstall > /dev/null 2>&1");
     } else if (ut.iequals(program, "swift")) {
         //doesn't work if the qt sdk is installed
@@ -153,6 +154,9 @@ int main(int argc, char** argv) {
         else if (strcmp(argv[1], "-h") == 0) {showCommands();}
         else if (strcmp(argv[1], "-L") == 0) {showLicense();}
         else if (strcmp(argv[1], "-l") == 0) {showClients();}
+	else {
+            cout << "Command not recognised. Use the -h flag for a command list" << endl << endl;
+        }
 
     } else {
         cout << "No command specified. Use the -h flag for a command list." << endl << endl;

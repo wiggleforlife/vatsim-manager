@@ -18,8 +18,9 @@ Created by Cian Ormond with no endorsements by VATSIM staff members. For more in
 * Manage `winetricks` and `wine` settings in a custom `WINEPREFIX` for ATC clients
 
 ### Included clients
-* xPilot 2.0.0 beta
-* Swift beta
+![xPilot version](https://img.shields.io/github/v/release/xpilot-project/xpilot?include_prereleases&label=xPilot&style=flat-square)  
+![Swift version](https://img.shields.io/github/v/release/swift-project/pilotclient?include_prereleases&label=Swift&style=flat-square)
+<!--TODO use version from VERSIONS-->
 
 ### Dependencies
 * libCURL >=7.68.0
