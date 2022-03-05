@@ -36,7 +36,7 @@ int install(const char* program, bool forceDownload) {
     if (ut.askForConfirmation(programName.c_str())) {
         system(("find /tmp/vatsim-manager/" + programName + ".run > /tmp/vatsim-manager/findinstaller 2>&1")
                        .c_str());
-        if (!ut.iequals(ut.readFile("/tmp/vatsim-manager/findres"), "/tmp/vatsim-manager/" +
+        if (!ut.iequals(ut.readFile("/tmp/vatsim-manager/findinstaller"), "/tmp/vatsim-manager/" +
                                                                     programName + ".run") || forceDownload) {
             dl.downloadPilotClient(programIndex);
         } else {
