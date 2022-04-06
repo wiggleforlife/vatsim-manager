@@ -30,6 +30,19 @@ bool utils::askForConfirmation(const char* program) {
 
 }
 
+int utils::askForChoice(const char* question, std::vector<std::string> choices) {
+    char in[1];
+
+    std::cout << question << std::endl;
+    for (auto i = 0; i < choices.size(); ++i) {
+        std::cout << "[" << i + 1 << "] : " << choices[i] << std::endl;
+    }
+    std::cout << std::endl << "Enter an option: ";
+    std::cin.getline(in, 2, '\n');
+
+    return std::stoi(in) - 1;
+}
+
 std::string utils::readFile(const char* filename) {
     std::filebuf fb;
     fb.open(filename, std::ios::in);
@@ -48,7 +61,6 @@ std::string utils::readFile(const char* filename) {
 }
 
 int utils::findInVector(std::vector<std::string> arr, std::string item) {
-
     for (auto i = 0; i < arr.size(); ++i) {
         if (iequals(arr[i], item))
             return i;

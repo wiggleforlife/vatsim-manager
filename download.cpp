@@ -1,10 +1,14 @@
-#include "download.h"
 #include <vector>
 #include <iostream>
 #include <curl/curl.h>
 #include <string>
 #include <sstream>
 #include <math.h>
+
+#include "download.h"
+#include "utils.h"
+
+utils ut_dl;
 
 size_t download::write_data(char *ptr, size_t size, size_t nmemb, void *userdata) {
     std::ostringstream *stream = (std::ostringstream*)userdata;
@@ -52,7 +56,7 @@ std::vector<std::string> download::downloadPilotVersions() {
     return versions;
 }
 
-int download::downloadPilotClient(int program) {
+int download::downloadPilotClient(int program, int variant, bool force) {
 
     std::string programVersion = download::downloadPilotVersions().at(program);
     std::string programName;
@@ -62,7 +66,15 @@ int download::downloadPilotClient(int program) {
         case 0:
             programName = "xPilot";
             url = "https://github.com/xpilot-project/xpilot/releases/download/v" + programVersion + "/xPilot-" +
-                programVersion + "-linux-x64-installer.run";
+                  programVersion + "-linux-x64";
+            switch (variant) {
+                case 0:
+                    url += "-ubuntu-latest-installer.run";
+                    break;
+                case 1:
+                    url += "-ubuntu-18.04-installer.run";
+                    break;
+            }
             break;
         case 1:
             programName = "Swift";
@@ -71,12 +83,24 @@ int download::downloadPilotClient(int program) {
             break;
     }
 
-    std::cout << "Downloading " << programName << " " << programVersion << std::endl;
+    std::cout << "Downloading " << programName << " " << programVersion << " variant " << variant + 1 << std::endl;
 
     CURL* curl = curl_easy_init();
     CURLcode res;
 
-    std::string outputName = "/tmp/vatsim-manager/" + programName + ".run";
+    std::string outputName = "/tmp/vatsim-manager/" + programName + programVersion + "-" + std::to_string(variant) + ".run";
+
+    system(("find " + outputName + " > /tmp/vatsim-manager/findinstaller 2>&1")
+                   .c_str());
+    //TODO better solution for no reaction to if
+    if (!ut_dl.iequals(ut_dl.readFile("/tmp/vatsim-manager/findinstaller"), outputName) || force) {}
+    else {
+        //TODO detect old versions
+        std::cout << "Found installer in /tmp/vatsim-manager/" << std::endl << "If you encounter errors or this is an old " <<
+             "installer, use --force-download" << std::endl << std::endl;
+        return 1;
+    }
+
     FILE* output = fopen(outputName.c_str(), "wb");
 
     if (!curl) {
