@@ -24,10 +24,13 @@ int install(const char* program, bool forceDownload) {
 
     string programName;
     int programIndex;
+    int programVar = 0;
 
     if (ut.iequals(program, "xpilot")) {
         programName = "xPilot";
         programIndex = 0;
+        programVar = ut.askForChoice("What build of xPilot would you like to download?",
+                                     {"Ubuntu Latest", "Ubuntu 18.04"});
     } else if (ut.iequals(program, "swift")) {
         programName = "Swift";
         programIndex = 1;
@@ -38,16 +41,7 @@ int install(const char* program, bool forceDownload) {
 
     string cmdOut;
     if (ut.askForConfirmation(programName.c_str())) {
-        system(("find /tmp/vatsim-manager/" + programName + ".run > /tmp/vatsim-manager/findinstaller 2>&1")
-                       .c_str());
-        if (!ut.iequals(ut.readFile("/tmp/vatsim-manager/findinstaller"), "/tmp/vatsim-manager/" +
-                                                                    programName + ".run") || forceDownload) {
-            dl.downloadPilotClient(programIndex);
-        } else {
-            //TODO detect old versions
-            cout << "Found installer in /tmp/vatsim-manager/" << endl << "If you encounter errors or this is an old " <<
-                "installer, use --force-download" << endl << endl;
-        }
+        dl.downloadPilotClient(programIndex, programVar, forceDownload);
         system(("chmod +x /tmp/vatsim-manager/" + programName + ".run").c_str());
         system(("/tmp/vatsim-manager/" + programName + ".run").c_str());
         cs.createState();
