@@ -56,7 +56,7 @@ std::vector<std::string> download::downloadPilotVersions() {
     return versions;
 }
 
-int download::downloadPilotClient(int program, int variant, bool force) {
+std::string download::downloadPilotClient(int program, int variant, bool force) {
 
     std::string programVersion = download::downloadPilotVersions().at(program);
     std::string programName;
@@ -89,7 +89,6 @@ int download::downloadPilotClient(int program, int variant, bool force) {
     CURLcode res;
 
     std::string outputName = "/tmp/vatsim-manager/" + programName + programVersion + "-" + std::to_string(variant) + ".run";
-
     system(("find " + outputName + " > /tmp/vatsim-manager/findinstaller 2>&1")
                    .c_str());
     //TODO better solution for no reaction to if
@@ -98,7 +97,7 @@ int download::downloadPilotClient(int program, int variant, bool force) {
         //TODO detect old versions
         std::cout << "Found installer in /tmp/vatsim-manager/" << std::endl << "If you encounter errors or this is an old " <<
              "installer, use --force-download" << std::endl << std::endl;
-        return 1;
+        return outputName;
     }
 
     FILE* output = fopen(outputName.c_str(), "wb");
@@ -124,7 +123,7 @@ int download::downloadPilotClient(int program, int variant, bool force) {
     curl_easy_cleanup(curl);
     fclose(output);
 
-    return 0;
+    return outputName;
 }
 
 // https://stackoverflow.com/questions/1637587/c-libcurl-console-progress-bar

@@ -41,9 +41,9 @@ int install(const char* program, bool forceDownload) {
 
     string cmdOut;
     if (ut.askForConfirmation(programName.c_str())) {
-        dl.downloadPilotClient(programIndex, programVar, forceDownload);
-        system(("chmod +x /tmp/vatsim-manager/" + programName + ".run").c_str());
-        system(("/tmp/vatsim-manager/" + programName + ".run").c_str());
+        string outFile = dl.downloadPilotClient(programIndex, programVar, forceDownload);
+        system(("chmod +x " + outFile).c_str());
+        system((outFile).c_str());
         cs.createState();
     }
 
