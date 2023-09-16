@@ -10,7 +10,7 @@
 class download {
 public:
     static std::vector<std::string> downloadPilotVersions();
-    int downloadPilotClient(int program, int variant, bool force);
+    std::string downloadPilotClient(int program, int variant, bool force);
 private:
     static size_t write_data(char *ptr, size_t size, size_t nmemb, void *userdata);
     static int progress_func(void* ptr, double TotalToDownload, double NowDownloaded, double TotalToUpload,
